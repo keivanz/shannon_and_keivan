@@ -1,3 +1,13 @@
+body {
+    font-family: "Urbanist",Helvetica,Arial,sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h1 {
+    align-items: center;
+    justify-content: center;
+    font-weight: 200;
+}
 .css-selector {
     background: linear-gradient(268deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
@@ -25,15 +35,4 @@
     0%{background-position:0% 56%}
     50%{background-position:100% 45%}
     100%{background-position:0% 56%}
-}
-
-body {
-    font-family: "Urbanist",Helvetica,Arial,sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-}
-h1 {
-    align-items: center;
-    justify-content: center;
-    font-weight: 200;
 }
