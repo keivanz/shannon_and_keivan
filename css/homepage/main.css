@@ -4,7 +4,11 @@ body {
     font-style: normal;
 }
 h1 {
+    font-weight: 200;
+}
+#name {
+    height: 100%; 
     align-items: center;
     justify-content: center;
-    font-weight: 200;
+    width:100%;
 }
