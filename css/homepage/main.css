@@ -1,0 +1,10 @@
+body {
+    font-family: "Urbanist",Helvetica,Arial,sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+h1 {
+    align-items: center;
+    justify-content: center;
+    font-weight: 200;
+}
