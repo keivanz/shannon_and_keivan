@@ -1,3 +1,7 @@
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 body {
     font-family: "Urbanist",Helvetica,Arial,sans-serif;
     font-optical-sizing: auto;
