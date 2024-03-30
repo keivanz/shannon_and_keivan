@@ -7,20 +7,30 @@ google_analytics: G-1X3KPT2R01
 
 # Color settings (hex-codes without the leading hash-tag)
 color:
-  primary-dark: '#000000'
+  primary-dark: '#05091E'
   links: '#219ab3'
 
 # Footer settings
-footer: Keivan and Shannon
+footer: Keivan Zolfaghari and Shannon Lin
 
 logo: /img/favicons/favicon-32x32.png
 cover: /img/screenshot.png
 
-# Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
-social:
-  - title: github
-    url: keivanz.github.io/shannon_and_keivan/
-
 # Build settings
 markdown: kramdown
 permalink: pretty
+
+include:
+  - '_pages'
+
+exclude:
+  - 'README.md'
+
+keep_files:
+  - 'CNAME'
+  - '.git'
+  - '.gitignore'
+
+plugins:
+  - jekyll-minifier
+  - jekyll-redirect-from
