@@ -8,6 +8,24 @@
     <link rel="icon" type="image/png" href="{{site.logo}}" hreflang="en-us">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
 
+    <meta property="og:title" content="{{site.title}}" />
+    <meta property="og:description" content="{{site.description}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{site.url}}" />
+    <meta property="og:site_name" content="{{site.name}}" />
+    <meta property="og:image" content="{{site.cover}}" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US">
+    <meta name="description" content="{{site.description}}">
+    <meta name="keywords" content="keivan, zolfaghari">
+    <meta name="google-site-verification" content="tbd" />
+    <meta itemprop="name" content="{{site.title}}">
+    <meta itemprop="description" content="{{site.description}}">
+    <meta itemprop="image" content="{{site.cover}}">
+    
+
     <!-- Custom CSS & Bootstrap Core CSS - Uses Bootswatch Flatly Theme: http://bootswatch.com/flatly/ -->
     <link rel="stylesheet" href="{{ "/style.css" | prepend: site.baseurl }}">
 
