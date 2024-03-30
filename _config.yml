@@ -1,7 +1,7 @@
 # Site settings
 title: Keivan and Shannon
 email: email@keivanandshannon.com
-url: https://keivanandshannon.com
+url: keivanandshannon.com
 description: "Keivan and Shannon"
 google_analytics: G-1X3KPT2R01
 
@@ -23,6 +23,3 @@ social:
 # Build settings
 markdown: kramdown
 permalink: pretty
-
-plugins:
-  - jekyll-redirect-from

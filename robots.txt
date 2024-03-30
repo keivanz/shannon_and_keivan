@@ -1,3 +1,0 @@
-User-agent: *
-Allow: https://www.keivanandshannon.com
-Disallow: /
