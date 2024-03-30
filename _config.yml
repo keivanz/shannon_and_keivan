@@ -13,6 +13,8 @@ color:
 # Footer settings
 footer: Your Website
 
+logo: /img/favicons/favicon-32x32.png
+
 # Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
 social:
   - title: twitter
