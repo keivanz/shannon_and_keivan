@@ -31,6 +31,3 @@ keep_files:
   - '.git'
   - '.gitignore'
 
-plugins:
-  - jekyll-minifier
-  - jekyll-redirect-from
