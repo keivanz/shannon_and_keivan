@@ -1,20 +1,10 @@
-body {
-    font-family: "Urbanist",Helvetica,Arial,sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-}
-h1 {
-    align-items: center;
-    justify-content: center;
-    font-weight: 200;
-}
-.css-selector {
+.gradient {
     background: linear-gradient(268deg, #a8edea, #fed6e3);
     background-size: 400% 400%;
-    -webkit-animation: AnimationName 58s ease infinite;
-    -moz-animation: AnimationName 58s ease infinite;
-    -o-animation: AnimationName 58s ease infinite;
-    animation: AnimationName 58s ease infinite;
+    -webkit-animation: AnimationName 48s ease infinite;
+    -moz-animation: AnimationName 48s ease infinite;
+    -o-animation: AnimationName 48s ease infinite;
+    animation: AnimationName 48s ease infinite;
 }
 @-webkit-keyframes AnimationName {
     0%{background-position:0% 56%}
