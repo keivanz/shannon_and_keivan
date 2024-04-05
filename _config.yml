@@ -1,17 +1,17 @@
 # Site settings
-title: Keivan and Shannon
+title: Keivan & Shannon
 email: hello@keivanandshannon.com
 url: keivanandshannon.com
-description: "Keivan and Shannon"
+description: "Keivan & Shannon"
 google_analytics: G-1X3KPT2R01
 
 # Color settings (hex-codes without the leading hash-tag)
 color:
-  primary-dark: '#05091E'
-  links: '#219ab3'
+  primary-dark: '05091E'
+  links: '219ab3'
 
 # Footer settings
-footer: Keivan Zolfaghari and Shannon Lin
+footer: Keivan Zolfaghari & Shannon Lin
 
 logo: /img/favicons/favicon-32x32.png
 cover: /img/screenshot.png

@@ -17,6 +17,7 @@ html {
     height: 100%;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;  
+    scroll-behavior: smooth;
 }
 
 h1,
@@ -307,32 +308,7 @@ a:focus {
     outline: 0;
     color: {{ site.color.primary-dark }};
     background-color: {{ site.color.links }};
-}
-
-ul.banner-social-buttons {
-    margin-top: 0;
-}
-
-ul.banner-social-buttons li {
-    margin-bottom: 15px;
-}
-
-@media(max-width:1199px) {
-    ul.banner-social-buttons {
-        margin-top: 15px;
-    }
-}
-
-@media(max-width:767px) {
-    ul.banner-social-buttons li {
-        display: block;
-        margin-bottom: 20px;
-        padding: 0;
-    }
-
-    ul.banner-social-buttons li:last-child {
-        margin-bottom: 0;
-    }
+    border-radius: 100px;
 }
 
 footer {

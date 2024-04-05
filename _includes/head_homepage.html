@@ -1,22 +1,22 @@
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-    <meta name="viewport" content="width=device-width">
-    <meta name="description" content="{{ site.description }}">
-    <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-    <link rel="icon" type="image/png" href="{{site.logo | prepend: site.baseurl}}" hreflang="en-us">
-    <meta property="og:title" content="{{site.title}}" />
-    <meta property="og:description" content="{{site.description}}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{site.url}}" />
-    <meta property="og:site_name" content="{{site.title}}" />
-    <meta property="og:image" content="{{site.cover}}" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:locale" content="en_US">
-    <meta itemprop="name" content="{{site.title}}">
-    <meta itemprop="description" content="{{site.description}}">
-    <meta itemprop="image" content="{{site.cover}}">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% if page.title %}{{ site.title }} | {{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="{{ site.description }}">
+  <link rel="icon" type="image/png" href="{{site.logo}}" hreflang="en-us">
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+  <meta property="og:title" content="{{site.title}}" />
+  <meta property="og:description" content="{{site.description}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{site.url}}" />
+  <meta property="og:site_name" content="{{site.title}}" />
+  <meta property="og:image" content="{{site.cover}}" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:locale" content="en_US">
+  <meta itemprop="name" content="{{site.title}}">
+  <meta itemprop="description" content="{{site.description}}">
+  <meta itemprop="image" content="{{site.cover}}">
 
     <link rel="stylesheet" href="{{ "/css/homepage/main.css" | prepend: site.baseurl }}">
     <link rel="stylesheet" href="{{ "/css/homepage/sunset.css" | prepend: site.baseurl }}">
@@ -34,12 +34,5 @@
     
       gtag('config', 'G-1X3KPT2R01');
     </script>
-    
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 </head>
