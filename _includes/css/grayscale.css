@@ -323,12 +323,14 @@ footer p {
 
 ::-moz-selection {
     text-shadow: none;
+    color:#fff;
     background: {{ site.color.primary-accent }};
 //    background: rgba(255,255,255,.2);
 }
 
 ::selection {
     text-shadow: none;
+    color:#fff;
     background: {{ site.color.primary-accent }};
 //    background: rgba(255,255,255,.2);
 }
