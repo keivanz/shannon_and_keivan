@@ -2,6 +2,7 @@
  * Start Bootstrap - Grayscale Bootstrap Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ * Modified by {{ site.footer }}
  */
 
 body {
@@ -71,7 +72,7 @@ a:focus {
     text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #fff;
-    background-color: {{ site.color.primary-accent }};
+    background-color: {{ site.color.primary-dark }};
 }
 
 .navbar-custom .navbar-brand {
@@ -148,7 +149,6 @@ a:focus {
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
-    -o-background-size: cover;
 }
 
 .intro .intro-body {
@@ -266,7 +266,6 @@ a:focus {
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
-    -o-background-size: cover;
 }
 
 #map {
