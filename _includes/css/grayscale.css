@@ -71,7 +71,7 @@ a:focus {
     text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     color: #fff;
-    background-color: {{ site.color.primary-dark }};
+    background-color: {{ site.color.primary-accent }};
 }
 
 .navbar-custom .navbar-brand {
@@ -324,14 +324,14 @@ footer p {
 
 ::-moz-selection {
     text-shadow: none;
-    background: #000;
-    background: rgba(255,255,255,.2);
+    background: {{ site.color.primary-accent }};
+//    background: rgba(255,255,255,.2);
 }
 
 ::selection {
     text-shadow: none;
-    background: #000;
-    background: rgba(255,255,255,.2);
+    background: {{ site.color.primary-accent }};
+//    background: rgba(255,255,255,.2);
 }
 
 img::selection {
@@ -343,5 +343,6 @@ img::-moz-selection {
 }
 
 body {
-    webkit-tap-highlight-color: rgba(255,255,255,.2);
+    webkit-tap-highlight-color: {{ site.color.primary-accent }};
+    //rgba(255,255,255,.2);
 }
