@@ -6,3 +6,23 @@
 .accordion-button:not(.collapsed) {
     background-color: #f0f8ff; 
 }
+
+.btn-primary {
+    background-color:black;
+    border-radius:0;
+}
+.btn-primary:hover {
+    background-color:black;
+}
+
+.corinthia-regular {
+    font-family: "Corinthia", cursive;
+    font-weight: 400;
+    font-style: normal;
+}  
+.corinthia-bold {
+    font-family: "Corinthia", cursive;
+    font-weight: 700;
+    font-style: normal;
+}
+  

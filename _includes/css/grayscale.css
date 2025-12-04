@@ -30,22 +30,21 @@ h6 {
     margin: 0 0 35px;
     text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-weight: 700;
     letter-spacing: 1px;
 }
 
 p {
     margin: 0 0 25px;
-    font-size: 18px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.4;
     text-wrap: balance;
 }
 
 @media(min-width:767px) {
     p {
         margin: 0 0 35px;
-        font-size: 20px;
-        line-height: 1.6;
+        font-size: 18px;
+        line-height: 1.5;
         text-wrap: balance;
     }
 }
@@ -83,14 +82,14 @@ a:focus {
     outline: 0;
 }
 
-.navbar-custom .navbar-brand .navbar-toggle {
+.navbar-custom .navbar-brand .navbar-toggler {
     padding: 4px 6px;
     font-size: 16px;
     color: #fff;
 }
 
-.navbar-custom .navbar-brand .navbar-toggle:focus,
-.navbar-custom .navbar-brand .navbar-toggle:active {
+.navbar-custom .navbar-brand .navbar-toggler:focus,
+.navbar-custom .navbar-brand .navbar-toggler:active {
     outline: 0;
 }
 
@@ -161,10 +160,12 @@ a:focus {
 
 .intro .intro-body .brand-heading {
     font-size: 40px;
+    margin:0;
 }
 
 .intro .intro-body .intro-text {
-    font-size: 18px;
+    font-size: 40px;
+    margin:0;
 }
 
 @media(min-width:767px) {
@@ -174,11 +175,11 @@ a:focus {
     }
 
     .intro .intro-body .brand-heading {
-        font-size: 100px;
+        font-size: 80px;
     }
 
     .intro .intro-body .intro-text {
-        font-size: 25px;
+        font-size: 50px;
     }
 }
 
