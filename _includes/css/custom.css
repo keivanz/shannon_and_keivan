@@ -7,9 +7,15 @@
     background-color: #f0f8ff; 
 }
 
+.navbar-toggler {
+    color:#ffffff;
+    border:none;
+}
+
 .btn-primary {
     background-color:black;
     border-radius:0;
+    border:none;
 }
 .btn-primary:hover {
     background-color:black;
@@ -25,4 +31,10 @@
     font-weight: 700;
     font-style: normal;
 }
+.montserrat-regular {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
   
