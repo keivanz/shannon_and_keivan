@@ -2,3 +2,6 @@ User-agent: *
 Allow: https://www.keivanandshannon.com/
 Allow: /$
 Disallow: /
+
+User-agent: facebookexternalhit
+Allow: / 
