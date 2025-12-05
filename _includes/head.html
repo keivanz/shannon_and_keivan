@@ -3,13 +3,12 @@
     <title>{% if page.title %}{{ site.title }} | {{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="{{page.description}}">
-    <meta name="robots" content="noindex">
     <link rel="icon" type="image/png" href="{{site.logo}}" hreflang="en-us">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
     <meta property="og:title" content="{% if page.title %}{{ site.title }} | {{ page.title }}{% else %}{{ site.title }}{% endif %}" />
     <meta property="og:description" content="{{page.description}}" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{page.url}}" />
+    <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}" />
     <meta property="og:site_name" content="{{site.title}}" />
     <meta property="og:image" content="{{site.cover}}" />
     <meta property="og:image:type" content="image/png" />
