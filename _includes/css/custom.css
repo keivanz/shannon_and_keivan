@@ -1,3 +1,7 @@
+@view-transition {
+	navigation: auto;
+}
+
 .accordion-button:focus {
     box-shadow: none;
     outline: none;

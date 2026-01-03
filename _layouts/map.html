@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    {% include head.html %}
+ 
+    <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+            
+            body {
+                font-family: 'Inter',Helvetica,Arial,sans-serif; //Montserrat
+                background-color: #F1EFE7;
+                overflow: hidden;
+            }
+            h1, h2, h3, .nav-logo {
+                font-family: 'Lora', serif;
+            }
+            .main-content {
+                height: calc(100vh - 55px);
+                background-color: #F1EFE7;
+            }
+            #map {
+                height: 100%;
+                width: 100%;
+                z-index: 1;
+                background: #F1EFE7;
+                /* Shade the map tiles to match the background tone */
+                filter: sepia(15%) brightness(98%) contrast(90%) saturate(80%);
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 3px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: #d1d1d1;
+            }
+            .place-link {
+                cursor: pointer;
+                border-bottom: 1px solid currentColor;
+                transition: all 0.2s ease;
+                font-weight: 500;
+            }
+            .place-link:hover {
+                opacity: 0.7;
+            }
+            .external-link {
+                display: inline-flex;
+                align-items: center;
+                vertical-align: middle;
+                margin-left: 4px;
+                opacity: 0.4;
+                transition: opacity 0.2s;
+            }
+            .external-link:hover {
+                opacity: 1;
+            }
+            .custom-div-icon {
+                background: none;
+                border: none;
+            }
+            .marker-pin {
+                width: 24px;
+                height: 24px;
+                border-radius: 50% 50% 50% 0;
+                position: absolute;
+                transform: rotate(-45deg);
+                left: 50%;
+                top: 50%;
+                margin: -12px 0 0 -12px;
+                border: 1.5px solid white;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .marker-icon-wrapper {
+                transform: rotate(45deg);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body class="text-[#2d2d2d]">
+
+        <nav class="h-14 border-b bg-[#9EB0AA] border-[#efefef] flex items-center justify-between px-6 md:px-10 sticky top-0 z-50">
+            <a class="navbar navbar-custom navbar-brand page-scroll" href="#page-top">
+                Keivan & Shannon's NYC Map
+            </a>
+            <ul class="flex items-center">
+                <li>
+                    <a class="nav-link page-scroll" href="/nyc">❮ Back to event</a>
+                </li>
+            </ul>
+        </nav>
+    
+        <main class="main-content flex flex-col md:flex-row overflow-hidden">
+            <aside class="w-full h-2/3 md:h-full md:w-2/3 bg-[#F1EFE7] flex flex-col overflow-y-auto custom-scrollbar">
+                <div class="max-w-3xl mx-auto pt-16 p-8">
+                    <div class="mb-8 md:mb-12">
+                        <h1 class="text-4xl md:text-5xl font-normal mb-4 md:mb-8">Our New York</h1>
+                    </div>
+    
+                    <div id="editorial-content" class="text-lg font-light leading-relaxed text-gray-600 space-y-12 md:space-y-16">
+                        <!-- Narrative content is injected here by JS -->
+                    </div>
+                </div>
+            </aside>
+    
+            <section class="w-full h-1/3 md:h-full md:w-1/3 relative border-t md:border-t-0 md:border-l border-[#efefef]">
+                <div id="map"></div>
+    
+                <div id="info-card" class="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 bg-[#F1EFE7] shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-sm p-6 hidden z-[1000] animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div class="flex flex-col items-center text-center">
+                        <button onclick="closeCard()" class="absolute top-3 right-3 text-gray-300 hover:text-black p-1 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                        
+                        <h3 id="card-title" class="text-xl md:text-2xl font-normal mt-2"></h3>
+                        <p id="card-order" class="text-[11px] text-gray-400 italic mb-6 font-light"></p>
+                        
+                        <a id="card-link" href="#" target="_blank" class="block w-full text-center bg-[#2d2d2d] text-white text-[9px] font-bold py-3 md:py-4 rounded-sm hover:bg-black transition-colors uppercase tracking-[0.2em]">
+                            Google Maps
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+    
+        <script>
+            const CATEGORIES = {
+                coffee: { color: '#8d775f', icon: `<svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M20,3H4v10c0,2.21,1.79,4,4,4h6c2.21,0,4-1.79,4-4v-3h2c1.1,0,2-0.9,2-2V5C22,3.9,21.1,3,20,3z M18,8h-2V5h2V8z M4,19h16v2H4V19z"/></svg>` },
+                dining: { color: '#6b705c', icon: `<svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M11,9H9V2H7v7H5V2H3v7c0,2.12,1.66,3.84,3.75,3.97V22h2.5v-9.03C11.34,12.84,13,11.12,13,9V2h-2V9z M16,6v8h3v8h2.5V2c-3.04,0-5.5,2.46-5.5,5.5V6z"/></svg>` },
+                parks: { color: '#a3a380', icon: `<svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17,12L22,21H2L7,12L5,12L12,2L19,12L17,12Z"/></svg>` }
+            };
+    
+            const locations = [
+                { "id": 1, "name": "CIBONE O'TE", "category": "dining", "lat": 40.7303, "lng": -73.9575, "link": "https://www.google.com/maps/search/?api=1&query=CIBONE+O'TE+NYC", "order": "Sample the dashis" },
+                { "id": 2, "name": "Levain Bakery", "category": "dining", "lat": 40.7161, "lng": -73.9592, "link": "https://www.google.com/maps/search/?api=1&query=Levain+Bakery+Williamsburg", "order": "The classic: walnut chocolate chip" },
+                { "id": 3, "name": "Domino Park", "category": "parks", "lat": 40.7135, "lng": -73.9673, "link": "https://www.google.com/maps/search/?api=1&query=Domino+Park+NYC" },
+                { "id": 4, "name": "McCarren Park", "category": "parks", "lat": 40.7218, "lng": -73.9507, "link": "https://www.google.com/maps/search/?api=1&query=McCarren+Park+NYC" },
+                { "id": 5, "name": "Kettl Tea - Greenpoint", "category": "coffee", "lat": 40.7289, "lng": -73.9573, "link": "https://www.google.com/maps/search/?api=1&query=Kettl+Tea+Greenpoint", "order": "Matcha latte" },
+                { "id": 6, "name": "Transmitter Park", "category": "parks", "lat": 40.7302, "lng": -73.9619, "link": "https://www.google.com/maps/search/?api=1&query=Transmitter+Park+NYC" },
+                { "id": 7, "name": "SEY Coffee", "category": "coffee", "lat": 40.7051, "lng": -73.9317, "link": "https://www.google.com/maps/search/?api=1&query=SEY+Coffee+NYC" },
+                { "id": 8, "name": "Win Son Bakery", "category": "dining", "lat": 40.7062, "lng": -73.9431, "link": "https://www.google.com/maps/search/?api=1&query=Win+Son+Bakery+NYC", "order": "Fantuan (飯糰) and a scallion pancake" },
+                { "id": 9, "name": "East River Ferry (North Williamsburg)", "category": "parks", "lat": 40.7208, "lng": -73.9614, "link": "https://www.google.com/maps/search/?api=1&query=North+Williamsburg+Ferry+Terminal", "order": "Download the Ferry app beforehand"  },
+                { "id": 10, "name": "Hudson River Park", "category": "parks", "lat": 40.7294, "lng": -74.0112, "link": "https://www.google.com/maps/search/?api=1&query=Hudson+River+Park+NYC" },
+                { "id": 11, "name": "The High Line", "category": "parks", "lat": 40.7480, "lng": -74.0048, "link": "https://www.google.com/maps/search/?api=1&query=The+High+Line+NYC" },
+                { "id": 12, "name": "Union Square Greenmarket", "category": "parks", "lat": 40.7359, "lng": -73.9911, "link": "https://www.google.com/maps/search/?api=1&query=Union+Square+Greenmarket+NYC" },
+                { "id": 13, "name": "Mission Sandwich Social", "category": "dining", "lat": 40.7121, "lng": -73.9620, "link": "https://www.google.com/maps/search/?api=1&query=Mission+Sandwich+Social+NYC" },
+                { "id": 14, "name": "Fini Pizza", "category": "dining", "lat": 40.7133, "lng": -73.9601, "link": "https://www.google.com/maps/search/?api=1&query=Fini+Pizza+Williamsburg", "order": "The white sauce slice" },
+                { "id": 15, "name": "Beco", "category": "dining", "lat": 40.7210, "lng": -73.9535, "link": "https://www.google.com/maps/search/?api=1&query=Beco+NYC" },
+                { "id": 16, "name": "Noods n’ Chill", "category": "dining", "lat": 40.7145, "lng": -73.9482, "link": "https://www.google.com/maps/search/?api=1&query=Noods+n+Chill+NYC" },
+                { "id": 17, "name": "Taqueria Ramirez", "category": "dining", "lat": 40.7325, "lng": -73.9552, "link": "https://www.google.com/maps/search/?api=1&query=Taqueria+Ramirez+NYC" },
+                { "id": 18, "name": "Lilia", "category": "dining", "lat": 40.7176, "lng": -73.9526, "link": "https://www.google.com/maps/search/?api=1&query=Lilia+NYC", "order": "Use the back door to order an olive oil icecream togo" },
+                { "id": 19, "name": "Four Horsemen", "category": "dining", "lat": 40.7129, "lng": -73.9591, "link": "https://www.google.com/maps/search/?api=1&query=The+Four+Horsemen+NYC" },
+                { "id": 20, "name": "Le Crocodile", "category": "dining", "lat": 40.7218, "lng": -73.9572, "link": "https://www.google.com/maps/search/?api=1&query=Le+Crocodile+NYC" },
+                { "id": 21, "name": "Wenwen", "category": "dining", "lat": 40.7320, "lng": -73.9548, "link": "https://www.google.com/maps/search/?api=1&query=Wenwen+NYC" },
+                { "id": 22, "name": "Kaew Jao Jorm", "category": "dining", "lat": 40.7308, "lng": -73.9542, "link": "https://www.google.com/maps/search/?api=1&query=Kaew+Jao+Jorm+NYC" },
+                { "id": 23, "name": "Eyval", "category": "dining", "lat": 40.7061, "lng": -73.9238, "link": "https://www.google.com/maps/search/?api=1&query=Eyval+NYC", "order": "The saffron icecream dessert" },
+                { "id": 24, "name": "Guarapo", "category": "dining", "lat": 40.7125, "lng": -73.9612, "link": "https://www.google.com/maps/search/?api=1&query=Guarapo+NYC" },
+                { "id": 25, "name": "Jamrock Jerk", "category": "dining", "lat": 40.7165, "lng": -73.9585, "link": "https://www.google.com/maps/search/?api=1&query=Jamrock+Jerk+NYC" },
+                { "id": 26, "name": "A&C Super", "category": "dining", "lat": 40.7142, "lng": -73.9605, "link": "https://www.google.com/maps/search/?api=1&query=A+and+C+Super+NYC", "order": "Matcha latte and egg biscuit"  },
+                { "id": 27, "name": "The Campbell", "category": "dining", "lat": 40.7285, "lng": -73.9562, "link": "https://www.google.com/maps/search/?api=1&query=The+Campbell+NYC" },
+                { "id": 28, "name": "Kijitora", "category": "coffee", "lat": 40.7128, "lng": -73.9622, "link": "https://www.google.com/maps/search/?api=1&query=Kijitora+NYC" },
+                { "id": 29, "name": "Maru Coffee", "category": "coffee", "lat": 40.7295, "lng": -73.9568, "link": "https://www.google.com/maps/search/?api=1&query=Maru+Coffee+NYC" },
+                { "id": 30, "name": "Paloma Bakery", "category": "coffee", "lat": 40.7275, "lng": -73.9555, "link": "https://www.google.com/maps/search/?api=1&query=Paloma+Bakery+NYC", "order": "Matcha pastry" },
+                { "id": 31, "name": "Mesa Coyoacan", "category": "dining", "lat": 40.7132, "lng": -73.9485, "link": "https://www.google.com/maps/search/?api=1&query=Mesa+Coyoacan+NYC" },
+                { "id": 32, "name": "Tashkent Supermarket", "category": "dining", "lat": 40.7315, "lng": -73.9915, "link": "https://www.google.com/maps/search/?api=1&query=Tashkent+Supermarket+NYC" },
+                { "id": 33, "name": "Thai Diner", "category": "dining", "lat": 40.7225, "lng": -73.9938, "link": "https://www.google.com/maps/search/?api=1&query=Thai+Diner+NYC" },
+                { "id": 34, "name": "Thelewala", "category": "dining", "lat": 40.7295, "lng": -74.0005, "link": "https://www.google.com/maps/search/?api=1&query=Thelewala+NYC" },
+                { "id": 35, "name": "Happier Grocery", "category": "dining", "lat": 40.7215, "lng": -73.9945, "link": "https://www.google.com/maps/search/?api=1&query=Happier+Grocery+NYC" },
+                { "id": 36, "name": "Librae Bakery", "category": "coffee", "lat": 40.7298, "lng": -73.9882, "link": "https://www.google.com/maps/search/?api=1&query=Librae+Bakery+NYC", "order": "Pistachio crossiant" },
+                { "id": 37, "name": "Shu Jiao Fu Zhou", "category": "dining", "lat": 40.7142, "lng": -73.9931, "link": "https://www.google.com/maps/search/?api=1&query=Shu+Jiao+Fu+Zhou+NYC" },
+                { "id": 38, "name": "Kitchen Cô Út", "category": "dining", "lat": 40.7138, "lng": -73.9942, "link": "https://www.google.com/maps/search/?api=1&query=Kitchen+Co+Ut+NYC" },
+                { "id": 39, "name": "All’Antico Vinaio", "category": "dining", "lat": 40.7301, "lng": -73.9995, "link": "https://www.google.com/maps/search/?api=1&query=All+Antico+Vinaio+NYC" },
+                { "id": 40, "name": "JOOY Tea", "category": "coffee", "lat": 40.7465, "lng": -73.9855, "link": "https://www.google.com/maps/search/?api=1&query=JOOY+Tea+NYC" },
+                { "id": 41, "name": "San Sabino", "category": "dining", "lat": 40.7328, "lng": -74.0018, "link": "https://www.google.com/maps/search/?api=1&query=San+Sabino+NYC" },
+                { "id": 42, "name": "Soothr", "category": "dining", "lat": 40.7322, "lng": -73.9875, "link": "https://www.google.com/maps/search/?api=1&query=Soothr+NYC" },
+                { "id": 43, "name": "Fong On", "category": "dining", "lat": 40.7165, "lng": -73.9948, "link": "https://www.google.com/maps/search/?api=1&query=Fong+On+NYC" },
+                { "id": 44, "name": "Fish Cheeks", "category": "dining", "lat": 40.7258, "lng": -73.9922, "link": "https://www.google.com/maps/search/?api=1&query=Fish+Cheeks+NYC" },
+                { "id": 45, "name": "Tomi Jazz", "category": "dining", "lat": 40.7585, "lng": -73.9685, "link": "https://www.google.com/maps/search/?api=1&query=Tomi+Jazz+NYC" },
+                { "id": 46, "name": "Okatte Tanto", "category": "dining", "lat": 40.7522, "lng": -73.9715, "link": "https://www.google.com/maps/search/?api=1&query=Okatte+Tanto+NYC" },
+                { "id": 47, "name": "Pikine", "category": "dining", "lat": 40.8035, "lng": -73.9485, "link": "https://www.google.com/maps/search/?api=1&query=Pikine+NYC" },
+                { "id": 48, "name": "Double Chicken Please", "category": "dining", "lat": 40.7202, "lng": -73.9915, "link": "https://www.google.com/maps/search/?api=1&query=Double+Chicken+Please+NYC" },
+                { "id": 49, "name": "OK Ryan", "category": "dining", "lat": 40.7559, "lng": -73.8338, "link": "https://www.google.com/maps/search/?api=1&query=OK+Ryan+NYC" },
+                { "id": 50, "name": "Khao Nom", "category": "dining", "lat": 40.7435, "lng": -73.8825, "link": "https://www.google.com/maps/search/?api=1&query=Khao+Nom+NYC" },
+                { "id": 51, "name": "SALSWEE", "category": "dining", "lat": 40.7441, "lng": -73.9897, "link": "https://www.google.com/maps/search/?api=1&query=SALSWEE+NYC", "order": "The mango dessert" },
+                { "id": 52, "name": "Tompkins Square Bagels", "category": "dining", "lat": 40.7262, "lng": -73.9846, "link": "https://www.google.com/maps/search/?api=1&query=Tompkins+Square+Bagels+NYC" },
+                { "id": 53, "name": "Fabrique Artisan Bakery", "category": "coffee", "lat": 40.7410, "lng": -74.0028, "link": "https://www.google.com/maps/search/?api=1&query=Fabrique+Artisan+Bakery+NYC" },
+                { "id": 54, "name": "Nura", "category": "dining", "lat": 40.7302, "lng": -73.9515, "link": "https://www.google.com/maps/search/?api=1&query=Nura+NYC", "order": "The dips and bread" },
+                { "id": 55, "name": "The Kati Roll Company", "category": "dining", "lat": 40.7303, "lng": -73.9995, "link": "https://www.google.com/maps/search/?api=1&query=The+Kati+Roll+Company+NYC" },
+                { "id": 56, "name": "Best Pizza", "category": "dining", "lat": 40.7155, "lng": -73.9575, "link": "https://www.google.com/maps/search/?api=1&query=Best+Pizza+Williamsburg", "order": "The grandma slice"  },
+                { "id": 57, "name": "Magnolia Bakery", "category": "dining", "lat": 40.7358, "lng": -74.0048, "link": "https://www.google.com/maps/search/?api=1&query=Magnolia+Bakery+NYC" },
+                { "id": 58, "name": "Pasta Louise Cafe", "category": "dining", "lat": 40.6668, "lng": -73.9818, "link": "https://www.google.com/maps/search/?api=1&query=Pasta+Louise+NYC" },
+                { "id": 59, "name": "Sofreh", "category": "dining", "lat": 40.6782, "lng": -73.9682, "link": "https://www.google.com/maps/search/?api=1&query=Sofreh+NYC" }
+            ];
+
+            let map;
+            let markers = [];
+    
+            function initMap() {
+                map = L.map('map', { 
+                    zoomControl: false, 
+                    attributionControl: false,
+                    scrollWheelZoom: true
+                }).setView([40.718, -73.97], 13);
+    
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { 
+                    maxZoom: 19 
+                }).addTo(map);
+    
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+                renderMarkers(locations);
+                renderContent();
+    
+                window.addEventListener('resize', () => {
+                    map.invalidateSize();
+                });
+            }
+    
+            function createCustomIcon(category) {
+                const config = CATEGORIES[category];
+                return L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div class='marker-pin' style='background-color: ${config.color}'>
+                             <div class="marker-icon-wrapper">${config.icon}</div>
+                           </div>`,
+                    iconSize: [24, 34],
+                    iconAnchor: [12, 34]
+                });
+            }
+    
+            function renderMarkers(items) {
+                markers.forEach(m => map.removeLayer(m));
+                markers = [];
+                items.forEach(loc => {
+                    const marker = L.marker([loc.lat, loc.lng], { icon: createCustomIcon(loc.category) })
+                        .addTo(map)
+                        .on('click', (e) => {
+                            L.DomEvent.stopPropagation(e);
+                            focusLocation(loc.id, true);
+                        });
+                    markers.push(marker);
+                });
+                if (items.length > 0) {
+                    const group = new L.featureGroup(markers);
+                    map.fitBounds(group.getBounds().pad(0.2));
+                }
+            }
+    
+            function renderContent() {
+                const container = document.getElementById('editorial-content');
+                
+                const getLink = (id, label) => {
+                    const loc = locations.find(l => l.id === id);
+                    if (!loc) return label;
+                    return `<span class="place-link" style="color: ${CATEGORIES[loc.category].color}" onclick="focusLocation(${loc.id}, true)">${label || loc.name}</span><a href="${loc.link}" target="_blank" class="external-link"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>`;
+                };
+    
+                const wburgFoodIds = [2, 13, 14, 15, 5, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 54, 56, 8];
+                const beyondFoodIds = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 57, 58, 59];
+    
+                container.innerHTML = `
+                    <div class="space-y-16">
+                        <!-- Williamsburg Section -->
+                        <section class="space-y-8">
+                            <div class="space-y-2">
+                                <h2 class="text-3xl font-normal">Williamsburg, Brooklyn</h2>
+                                <p class="text-gray-500 font-light">Where our daily lives unfold.</p>
+                            </div>
+    
+                            <div class="space-y-6">
+                                <p>
+                                    Williamsburg has been Shannon’s home for the last five years and Keivan’s for the last three. We often wander without much of a plan, soaking in the neighborhood’s energy as it unfolds around us. Even after years, the same streets never feel old. There’s always something new to notice: a storefront we somehow missed before, a familiar corner suddenly busy with people, or unexpectedly quiet.
+                                </p>
+                                
+                                <div class="space-y-4">
+                                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Some of our favorite routes</h3>
+                                    <ul class="space-y-6 list-none">
+                                        <li class="pl-0">
+                                            Strolling down Grand Street, lingering at shop windows as we go, until the walk naturally opens up at ${getLink(3, "Domino Park")}. The neighborhood slowly gives way to the river, where the Manhattan skyline stretches out across the water.
+                                        </li>
+                                        <li class="pl-0">
+                                            Meandering through what we call “downtown Williamsburg”, which is the stretch between Metropolitan Avenue and McCarren Park. This is where the neighborhood feels most in motion: mainstream storefronts alongside thrift shops and smaller themed stores, with a steady flow of people spilling out from the L train and into the streets.
+                                        </li>
+                                        <li class="pl-0">
+                                            People-watching at ${getLink(4, "McCarren Park")}, where the neighborhood seems to gather. There’s often music in the background, the smell of barbecue drifting through the air, and scenes of people enjoying the day while excited dogs dart around at play. We always visit ${getLink(1, "Cibone")} in the northwest corner of the park to sample their dashi and admire their thoughtfully curated selection of goods.
+                                        </li>
+                                        <li class="pl-0">
+                                            Walking north towards Greenpoint on Franklin Street, frequently drifting onto side streets to take in the beautiful houses and foliage along the way. When we’re in the mood for a small treat, we order a matcha or soft serve at ${getLink(5, "Kettl")} on Greenpoint Avenue and bring it to ${getLink(6, "Transmitter Park")} to enjoy with a view.
+                                        </li>
+                                        <li class="pl-0">
+                                            Spending a slow morning at ${getLink(7, "SEY Coffee")}, where incredible coffee meets a bright, plant-filled space washed in natural light. On the walk home, we often stop by ${getLink(8, "Win Son Bakery")} for fantuan (飯糰) and scallion pancake. Or if we're near Bedford, a mandatory stop at ${getLink(2, "Levain Bakery")} or a slice at ${getLink(14, "Fini Pizza")}.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    
+                            <div class="pt-4 space-y-4">
+                                <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Neighborhood Favorites</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-8 text-[13px]">
+                                    ${wburgFoodIds.map(id => `<div>${getLink(id)}</div>`).join('')}
+                                </div>
+                            </div>
+                        </section>
+    
+                        <!-- Beyond Section -->
+                        <section class="space-y-8">
+                            <div class="space-y-2">
+                                <h2 class="text-3xl font-normal">Beyond the Neighborhood</h2>
+                                <p class="text-gray-500 font-light">Experiences across the bridges and further south.</p>
+                            </div>
+                            
+                            <ul class="space-y-6 list-none">
+                                <li class="pl-0">
+                                    Experiencing the city from the water with the ${getLink(9, "East River Ferry")}. We especially love riding the ferry from the North Williamsburg stop down to the Financial District in Manhattan. We usually sit on the open-air deck, taking in the fresh air as the ferry slips beneath iconic bridges and the Manhattan skyline draws closer.
+                                </li>
+                                <li class="pl-0">
+                                    Taking in the energy at ${getLink(10, "Hudson River Park")}. The city feels in constant motion here, with people passing by and boats cutting through the river. One World Trade Center anchors the view to the south, while Hudson Yards rises in the distance to the north. It’s a place that makes the city feel alive not just in scale, but in the number of lives moving through it at once.
+                                </li>
+                                <li class="pl-0">
+                                    Strolling through ${getLink(11, "The High Line")}. Art installations and small vendors line the path as it winds between buildings, offering a perspective that feels almost secret: glimpses into apartments above and long looks down at the streets below. We prefer walking north to south, ending in the West Village, where the city takes on a softer charm.
+                                </li>
+                                <li class="pl-0">
+                                    Spending time at ${getLink(12, "Union Square Greenmarket")}, especially when the market takes over. We love perusing the seasonal produce and watching the neighborhood settle into the weekend.
+                                </li>
+                            </ul>
+    
+                            <div class="pt-4 pb-20 space-y-4">
+                                <h3 class="text-sm font-bold uppercase tracking-widest text-gray-400">Citywide Favorites</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-8 text-[13px]">
+                                    ${beyondFoodIds.map(id => `<div>${getLink(id)}</div>`).join('')}
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                `;
+            }
+    
+            function focusLocation(id, zoom = false) {
+                const loc = locations.find(l => l.id === id);
+                if (!loc) return;
+                const titleEl = document.getElementById('card-title');
+                const orderEl = document.getElementById('card-order');
+                
+                titleEl.innerText = loc.name;
+                
+                if (loc.order) {
+                    orderEl.innerText = `Our order: ${loc.order}`;
+                    orderEl.style.display = 'block';
+                    titleEl.classList.remove('mb-6');
+                    titleEl.classList.add('mb-1');
+                } else {
+                    orderEl.style.display = 'none';
+                    titleEl.classList.remove('mb-1');
+                    titleEl.classList.add('mb-6');
+                }
+                
+                document.getElementById('card-link').href = loc.link;
+                document.getElementById('info-card').classList.remove('hidden');
+                
+                if (zoom) {
+                    const offsetLat = window.innerWidth < 768 ? loc.lat - 0.005 : loc.lat;
+                    map.flyTo([offsetLat, loc.lng], 15, { duration: 1.5 });
+                }
+            }
+    
+            function closeCard() { document.getElementById('info-card').classList.add('hidden'); }
+    
+            window.onload = initMap;
+        </script>
+
+    {% include js.html %}
+    </body>
+</html>
