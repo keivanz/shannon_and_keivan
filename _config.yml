@@ -32,3 +32,5 @@ keep_files:
   - '.git'
   - '.gitignore'
 
+plugins:
+  - jekyll-redirect-from
